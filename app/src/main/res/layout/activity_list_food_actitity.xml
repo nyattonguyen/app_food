@@ -27,8 +27,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:padding="12dp"
-                    android:src="@tools:sample/avatars"
-                    app:srcCompat="@drawable/arrow" />
+                    app:srcCompat="@drawable/arrow"
+                    tools:ignore="MissingConstraints" />
 
                 <TextView
                     android:id="@+id/titleTxt"

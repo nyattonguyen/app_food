@@ -6,8 +6,10 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 
+import com.example.appfood.Adapter.FoodListAdapter;
 import com.example.appfood.Domain.Foods;
 import com.example.appfood.R;
 import com.example.appfood.databinding.ActivityListFoodActitityBinding;
@@ -36,7 +38,7 @@ public class ListFoodActitity extends BaseActivity {
     }
 
     private void initList() {
-        DatabaseReference myRef = database.getReference("'Foods");
+        DatabaseReference myRef = database.getReference("Foods");
         binding.progressBar.setVisibility(View.VISIBLE);
         ArrayList<Foods> list = new ArrayList<>();
 
@@ -55,8 +57,10 @@ public class ListFoodActitity extends BaseActivity {
                     }
                     if(list.size() > 0) {
                         binding.foodListView.setLayoutManager(new GridLayoutManager(ListFoodActitity.this, 2));
-
+                        adapterListFood = new FoodListAdapter(list);
+                        binding.foodListView.setAdapter(adapterListFood);
                     }
+                    binding.progressBar.setVisibility(View.GONE);
                 }
             }
 
