@@ -7,6 +7,7 @@ import android.view.View;
 
 import com.bumptech.glide.Glide;
 import com.example.appfood.Domain.Foods;
+import com.example.appfood.Helper.ManagmentCart;
 import com.example.appfood.R;
 import com.example.appfood.databinding.ActivityDetailBinding;
 
@@ -14,6 +15,7 @@ public class DetailActivity extends BaseActivity {
     ActivityDetailBinding binding;
     private Foods object;
     private int num = 1;
+    private ManagmentCart managmentCart;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -21,12 +23,13 @@ public class DetailActivity extends BaseActivity {
         setContentView(binding.getRoot());
 
         getWindow().setStatusBarColor(getResources().getColor(R.color.white));
-
         getIntentExtra();
         getVariable();
     }
 
     private void getVariable() {
+        managmentCart = new ManagmentCart(this);
+
         binding.backDetailBtn.setOnClickListener(v->finish());
 
         Glide.with(DetailActivity.this)
@@ -39,6 +42,22 @@ public class DetailActivity extends BaseActivity {
         binding.rateDetailTxt.setText(object.getStar()+" Rating");
         binding.ratingBar.setRating((float) object.getStar());
         binding.totalTxt.setText(("$ "+num*object.getPrice()));
+
+        binding.plusBtn.setOnClickListener(v -> {
+            num = num+1;
+            binding.numTxt.setText(num+" ");
+            binding.totalTxt.setText("$"+(num * object.getPrice()));
+        });
+        binding.minusBtn.setOnClickListener(v -> {
+            num = num-1;
+            binding.numTxt.setText(num+" ");
+            binding.totalTxt.setText("$"+(num * object.getPrice()));
+        });
+
+        binding.addBtn.setOnClickListener(v -> {
+            object.setNumberInCart(num);
+            managmentCart.insertFood(object);
+        });
 
     }
 
