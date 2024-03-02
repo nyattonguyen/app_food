@@ -78,6 +78,6 @@ public class ListFoodActitity extends BaseActivity {
         isSearch = getIntent().getBooleanExtra("isSearch", false);
 
         binding.titleTxt.setText(categoryName);
-        binding.btnBack.setOnClickListener(v -> finish());
+        binding.backBtn.setOnClickListener(v -> finish());
     }
 }

@@ -13,6 +13,12 @@
         android:theme="@style/Theme.AppFood"
         tools:targetApi="31">
         <activity
+            android:name=".Activity.CartActivity"
+            android:exported="false" />
+        <activity
+            android:name=".Activity.DetailActivity"
+            android:exported="false" />
+        <activity
             android:name=".Activity.ListFoodActitity"
             android:exported="false" />
         <activity
@@ -32,7 +38,7 @@
             android:exported="false" />
         <activity
             android:name=".Activity.IntroActivity"
-            android:exported="true"></activity>
+            android:exported="true" />
         <activity
             android:name=".Activity.BaseActivity"
             android:exported="false"
