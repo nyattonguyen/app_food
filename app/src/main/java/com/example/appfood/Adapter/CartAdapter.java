@@ -1,6 +1,7 @@
 package com.example.appfood.Adapter;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -8,11 +9,13 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.widget.AppCompatButton;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.bitmap.CenterCrop;
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners;
+import com.example.appfood.Activity.CartActivity;
 import com.example.appfood.Domain.Foods;
 import com.example.appfood.Helper.ChangeNumberItemsListener;
 import com.example.appfood.Helper.ManagmentCart;
@@ -22,10 +25,11 @@ import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 
+import cn.pedant.SweetAlert.SweetAlertDialog;
+
 public class CartAdapter extends RecyclerView.Adapter<CartAdapter.viewholder> {
     ArrayList<Foods> list;
     private ManagmentCart managmentCart;
-
     public CartAdapter(ArrayList<Foods> list, Context context, ChangeNumberItemsListener changeNumberItemsListener) {
         this.list = list;
         managmentCart = new ManagmentCart(context);
@@ -63,6 +67,11 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.viewholder> {
             notifyDataSetChanged();
             changeNumberItemsListener.change();
         }));
+
+        holder.btnDeleteItem.setOnClickListener(v -> managmentCart.removeItem(list, position, () -> {
+            notifyDataSetChanged();
+            changeNumberItemsListener.change();
+        }));
     }
 
     @Override
@@ -73,7 +82,9 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.viewholder> {
     public class viewholder extends RecyclerView.ViewHolder{
         TextView title, feeEachItem, plusItem, minusItem;
         ImageView pic;
+        ImageView btnDeleteItem;
         TextView totalEachItem, num;
+        AppCompatButton btnConfirmOrder;
 
         public viewholder(@NonNull View itemView) {
             super(itemView);
@@ -85,7 +96,8 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.viewholder> {
             minusItem = itemView.findViewById(R.id.btnMinusCart);
             totalEachItem = itemView.findViewById(R.id.txtTotalEachItem);
             num = itemView.findViewById(R.id.txtNumberItem);
-
+            btnConfirmOrder = itemView.findViewById(R.id.btnConfirmOrder);
+            btnDeleteItem = itemView.findViewById(R.id.btnDeleteItem);
         }
     }
 }

@@ -4,7 +4,9 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 
 import com.example.appfood.Adapter.CartAdapter;
@@ -12,6 +14,8 @@ import com.example.appfood.Helper.ChangeNumberItemsListener;
 import com.example.appfood.Helper.ManagmentCart;
 import com.example.appfood.R;
 import com.example.appfood.databinding.ActivityCartBinding;
+
+import cn.pedant.SweetAlert.SweetAlertDialog;
 
 public class CartActivity extends BaseActivity {
     private ActivityCartBinding binding;
@@ -30,7 +34,7 @@ public class CartActivity extends BaseActivity {
         setVariable();
         calculateCart();
         initList();
-
+        ConfirmOrder();
     }
     private void initList() {
         if(managmentCart.getListCart().isEmpty()) {
@@ -46,6 +50,19 @@ public class CartActivity extends BaseActivity {
         adapter = new CartAdapter(managmentCart.getListCart(), this, () -> calculateCart());
 
         binding.cardView.setAdapter(adapter);
+    }
+
+    private void ConfirmOrder() {
+        binding.btnConfirmOrder.setOnClickListener(v -> new SweetAlertDialog(CartActivity.this, SweetAlertDialog.SUCCESS_TYPE)
+                .setTitleText("Your order successfully !")
+                .setConfirmClickListener(sDialog -> {
+                    managmentCart.clearList();
+                    adapter.notifyItemRangeRemoved(0, managmentCart.getListCart().size());
+                    sDialog.dismissWithAnimation();
+                    Intent intent = new Intent(CartActivity.this, MainActivity.class);
+                    startActivity(intent);
+                })
+                .show());
     }
     private void calculateCart() {
         double percentTax = 0.02; //percent 2% tax

@@ -1,6 +1,7 @@
 package com.example.appfood.Helper;
 
 import android.content.Context;
+import android.util.Log;
 import android.widget.Toast;
 
 
@@ -19,30 +20,78 @@ public class ManagmentCart {
         this.tinyDB=new TinyDB(context);
     }
 
+//    public void insertFood(Foods item) {
+//        ArrayList<Foods> listpop = getListCart();
+//        boolean existAlready = false;
+//        int n = 0;
+//        for (int i = 0; i < listpop.size(); i++) {
+//            if (listpop.get(i).getTitle().equals(item.getTitle())) {
+//                existAlready = true;
+//                n = i;
+//                break;
+//            }
+//        }
+//        if(existAlready){
+//            listpop.get(n).setNumberInCart(item.getNumberInCart());
+//        }else{
+//            listpop.add(item);
+//        }
+//        tinyDB.putListObject("CartList",listpop);
+//        Toast.makeText(context, "Added to your Cart", Toast.LENGTH_SHORT).show();
+//    }
     public void insertFood(Foods item) {
-        ArrayList<Foods> listpop = getListCart();
+        ArrayList<Foods> listCart = getListCart();
         boolean existAlready = false;
-        int n = 0;
-        for (int i = 0; i < listpop.size(); i++) {
-            if (listpop.get(i).getTitle().equals(item.getTitle())) {
+
+        // Check for existing item by ID instead of title
+        for (Foods existingItem : listCart) {
+            if (existingItem.getId() == (item.getId())) {
                 existAlready = true;
-                n = i;
+                existingItem.setNumberInCart(existingItem.getNumberInCart() + item.getNumberInCart());
                 break;
             }
         }
-        if(existAlready){
-            listpop.get(n).setNumberInCart(item.getNumberInCart());
-        }else{
-            listpop.add(item);
+
+        if (!existAlready) {
+            listCart.add(item);
         }
-        tinyDB.putListObject("CartList",listpop);
+
+        tinyDB.putListObject("CartList", listCart);
         Toast.makeText(context, "Added to your Cart", Toast.LENGTH_SHORT).show();
     }
 
     public ArrayList<Foods> getListCart() {
+        Log.d("day ne", "dd"+tinyDB.getListObject("CartList"));
         return tinyDB.getListObject("CartList");
     }
 
+    public void clearList() {
+        tinyDB.remove("CartList"); // Clear the cart list from TinyDB
+        Toast.makeText(context, "Cart cleared successfully", Toast.LENGTH_SHORT).show();
+    }
+
+    public void removeItem(ArrayList<Foods> listItem, int id, ChangeNumberItemsListener changeNumberItemsListener) {
+        int positionToRemove = -1;
+
+        // Find item by ID
+        for (int i = 0; i < listItem.size(); i++) {
+            if (listItem.get(i).getId() == id) {
+                positionToRemove = i;
+                break;
+            }
+        }
+
+        if (positionToRemove != -1) {
+            listItem.remove(positionToRemove);
+            tinyDB.putListObject("CartList", listItem);
+            Toast.makeText(context, "Item removed from cart", Toast.LENGTH_SHORT).show();
+            // Notify adapter of data change to update UI
+            tinyDB.putListObject("CartList",listItem);
+            changeNumberItemsListener.change();
+        } else {
+            Toast.makeText(context, "Item not found in cart", Toast.LENGTH_SHORT).show();
+        }
+    }
     public Double getTotalFee(){
         ArrayList<Foods> listItem=getListCart();
         double fee=0;
