@@ -10,6 +10,7 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.widget.AppCompatButton;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
@@ -46,6 +47,7 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.viewholder> {
 
     @Override
     public void onBindViewHolder(@NonNull CartAdapter.viewholder holder, int position) {
+
         holder.title.setText(list.get(position).getTitle());
         holder.feeEachItem.setText(("$"+list.get(position).getNumberInCart() * list.get(position).getPrice()));
         holder.totalEachItem.setText(list.get(position).getNumberInCart()+" * $"+(
@@ -68,7 +70,7 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.viewholder> {
             changeNumberItemsListener.change();
         }));
 
-        holder.btnDeleteItem.setOnClickListener(v -> managmentCart.removeItem(list, position, () -> {
+        holder.btnDeleteItem.setOnClickListener(v -> managmentCart.removeItem(list, list.get(position).getId(), () -> {
             notifyDataSetChanged();
             changeNumberItemsListener.change();
         }));
@@ -85,6 +87,7 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.viewholder> {
         ImageView btnDeleteItem;
         TextView totalEachItem, num;
         AppCompatButton btnConfirmOrder;
+        ConstraintLayout viewEmpty;
 
         public viewholder(@NonNull View itemView) {
             super(itemView);
@@ -98,6 +101,8 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.viewholder> {
             num = itemView.findViewById(R.id.txtNumberItem);
             btnConfirmOrder = itemView.findViewById(R.id.btnConfirmOrder);
             btnDeleteItem = itemView.findViewById(R.id.btnDeleteItem);
+            viewEmpty = itemView.findViewById(R.id.viewEmpty);
+
         }
     }
 }

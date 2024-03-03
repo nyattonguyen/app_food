@@ -1,6 +1,7 @@
 package com.example.appfood.Activity;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -8,6 +9,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 
 import com.example.appfood.Adapter.CartAdapter;
 import com.example.appfood.Helper.ChangeNumberItemsListener;
@@ -35,34 +37,40 @@ public class CartActivity extends BaseActivity {
         calculateCart();
         initList();
         ConfirmOrder();
+
+
     }
     private void initList() {
         if(managmentCart.getListCart().isEmpty()) {
-            binding.txtEmpty.setVisibility(View.VISIBLE);
+            binding.viewEmpty.setVisibility(View.VISIBLE);
             binding.scrollViewCart.setVisibility(View.GONE);
         } else {
-            binding.txtEmpty.setVisibility(View.GONE);
+            binding.viewEmpty.setVisibility(View.GONE);
             binding.scrollViewCart.setVisibility(View.VISIBLE);
         }
 
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
         binding.cardView.setLayoutManager(linearLayoutManager);
         adapter = new CartAdapter(managmentCart.getListCart(), this, () -> calculateCart());
-
         binding.cardView.setAdapter(adapter);
     }
 
     private void ConfirmOrder() {
-        binding.btnConfirmOrder.setOnClickListener(v -> new SweetAlertDialog(CartActivity.this, SweetAlertDialog.SUCCESS_TYPE)
-                .setTitleText("Your order successfully !")
-                .setConfirmClickListener(sDialog -> {
-                    managmentCart.clearList();
-                    adapter.notifyItemRangeRemoved(0, managmentCart.getListCart().size());
-                    sDialog.dismissWithAnimation();
-                    Intent intent = new Intent(CartActivity.this, MainActivity.class);
-                    startActivity(intent);
-                })
-                .show());
+        binding.btnConfirmOrder.setOnClickListener(v -> {
+            SweetAlertDialog alertDialog = new SweetAlertDialog(CartActivity.this, SweetAlertDialog.SUCCESS_TYPE);
+                alertDialog.setTitleText("Your order successfully !");
+                alertDialog.setConfirmClickListener(sDialog -> {
+                            sDialog.dismissWithAnimation();
+                            managmentCart.clearList();
+                            adapter.notifyItemRangeRemoved(0, managmentCart.getListCart().size());
+                            adapter.notifyDataSetChanged();
+                            Button btn = (Button) alertDialog.findViewById(cn.pedant.SweetAlert.R.id.confirm_button);
+                            btn.setBackgroundColor(ContextCompat.getColor(CartActivity.this,R.color.red));
+                            Intent intent = new Intent(CartActivity.this, MainActivity.class);
+                            startActivity(intent);
+                        })
+                            .show();
+        });
     }
     private void calculateCart() {
         double percentTax = 0.02; //percent 2% tax

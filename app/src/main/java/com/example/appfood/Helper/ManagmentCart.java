@@ -61,8 +61,12 @@ public class ManagmentCart {
     }
 
     public ArrayList<Foods> getListCart() {
-        Log.d("day ne", "dd"+tinyDB.getListObject("CartList"));
-        return tinyDB.getListObject("CartList");
+        ArrayList<Foods> listCart = tinyDB.getListObject("CartList");
+        if (listCart == null) {
+            listCart = new ArrayList<>(); // Create an empty list if it's null
+        }
+
+        return listCart;
     }
 
     public void clearList() {
